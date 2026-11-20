@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101d"/><stop offset=".56" stop-color="#123349"/><stop offset="1" stop-color="#06090e"/></linearGradient><radialGradient id="glow"><stop stop-color="#7eb8d4" stop-opacity=".46"/><stop offset="1" stop-color="#7eb8d4" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><ellipse cx="960" cy="140" rx="430" ry="320" fill="url(#glow)"/>
+<path d="M0 480 180 365 300 430 510 290 730 445 940 340 1200 475V630H0Z" fill="#07111c" opacity=".88"/><path d="M0 540 220 445 420 500 690 390 920 500 1080 430 1200 490V630H0Z" fill="#03080f"/>
+<rect x="70" y="68" width="1060" height="494" rx="24" fill="#091827" fill-opacity=".26" stroke="#c2e2f1" stroke-opacity=".32"/>
+<text x="112" y="148" fill="#b9ddea" font-family="Arial,sans-serif" font-size="18" letter-spacing="7">VIREON / SIGNATURE</text>
+<text x="108" y="300" fill="#f3f8fa" font-family="Arial,sans-serif" font-size="96" font-weight="600" letter-spacing="-5">Stand out in</text>
+<text x="108" y="402" fill="none" stroke="#e3f0f5" stroke-width="1.5" font-family="Arial,sans-serif" font-size="96" font-weight="600" letter-spacing="-5">every inbox.</text>
+<text x="112" y="490" fill="#c2d7e1" font-family="Arial,sans-serif" font-size="24">Design · Preview · Export</text></svg>

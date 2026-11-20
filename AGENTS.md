@@ -696,3 +696,15 @@ After moving files:
 - Report the exact moves, the structural reason, checks run, and checks not run.
 
 Do not perform broad folder moves as incidental cleanup during an unrelated task. When a folder refactor is explicitly requested, complete the structural work coherently rather than stopping after creating the target folders.
+
+
+## Vireon Signature project conventions
+
+- This repository is a standalone Vue 3 + TypeScript + Vite application. Keep the project browser-only unless an independently justified backend requirement is approved.
+- Use `src/app/` for app composition and keep signature-specific UI, state, domain logic, and styles together under `src/features/signature-studio/`.
+- Keep `domain/emailSignature.ts` framework-independent. Vue, browser storage, clipboard APIs, and DOM access belong in feature components or composables, not the domain renderer.
+- Put behavior-oriented regression tests in `tests/domain/`. Preserve useful existing tests and comments; do not prune either category unless the user explicitly selects that untangling addition.
+- Local commands: `npm run dev`, `npm run typecheck`, `npm test`, `npm run build`, and `python3 scripts/validate.py`.
+- Use Node.js 24 in CI and npm as the package manager. GitHub Actions references must be pinned to full commit SHAs.
+- Email output must remain conservative and independent of editor-only effects. Never put scripts, external stylesheets, tracking pixels, canvas output, or web-font dependencies into copied signature HTML.
+- Signature drafts remain local to the visitor's browser. Do not add server-side collection or analytics without changing the privacy model and documentation.

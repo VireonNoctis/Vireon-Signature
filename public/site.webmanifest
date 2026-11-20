@@ -1,0 +1,16 @@
+{
+  "name": "Vireon Signature",
+  "short_name": "Signature",
+  "start_url": "/Vireon-Signature/",
+  "display": "standalone",
+  "background_color": "#06090e",
+  "theme_color": "#07101d",
+  "icons": [
+    {
+      "src": "/Vireon-Signature/vireon-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

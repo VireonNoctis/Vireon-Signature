@@ -1,0 +1,26 @@
+:root {
+  color-scheme: dark;
+  --color-canvas: #06090e;
+  --color-ink: #f2f1ed;
+  --color-muted: #a0aeb8;
+  --color-accent: #a9dce3;
+  --font-sans: Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sans: var(--font-sans);
+  --mono: var(--font-mono);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* { box-sizing: border-box; }
+html { min-width: 320px; min-height: 100%; background: var(--color-canvas); scroll-behavior: smooth; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--color-canvas); }
+body, button, input, textarea, select { font-family: var(--font-sans); }
+button, input, textarea, select { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+::selection { color: #07131e; background: #b8d4e1; }
+:focus-visible { outline: 2px solid rgba(169,220,227,.9); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "Vue.volar",
     "editorconfig.editorconfig",
     "streetsidesoftware.code-spell-checker",
     "davidanson.vscode-markdownlint",
