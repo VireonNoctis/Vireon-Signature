@@ -696,3 +696,17 @@ After moving files:
 - Report the exact moves, the structural reason, checks run, and checks not run.
 
 Do not perform broad folder moves as incidental cleanup during an unrelated task. When a folder refactor is explicitly requested, complete the structural work coherently rather than stopping after creating the target folders.
+
+
+## Vireon Signature project conventions
+
+- This is a standalone React + JavaScript + Vite application with Three.js for the atmospheric scene. Do not reintroduce Vue or TypeScript.
+- Use `src/app/` for app composition. Keep signature-specific UI, state, domain logic and styles together under `src/features/signature-studio/`.
+- Keep `domain/emailSignature.js` framework-independent. React, browser storage, clipboard APIs and DOM access belong in components or hooks, not the domain renderer.
+- Use plain JavaScript ES modules and JSX. Add JSDoc only where a public contract or non-obvious boundary benefits from it.
+- Put behavior-oriented regression tests in `tests/domain/`. Preserve useful tests and comments; do not remove either category as generic cleanup.
+- Local commands: `npm run dev`, `npm test`, `npm run build`, and `python3 scripts/validate.py`.
+- Use Node.js 24 and npm in CI. GitHub Actions references must be pinned to full commit SHAs.
+- Three.js is limited to the decorative background. Cap pixel ratio, pause when the page is hidden, respect reduced motion, handle context loss and dispose GPU resources.
+- Email output must remain conservative and independent of editor-only effects. Never put scripts, external stylesheets, tracking pixels, Canvas output, blur or web-font dependencies into copied signature HTML.
+- Signature drafts remain local to the visitor's browser. Do not add server-side collection or analytics without changing the privacy model and documentation.

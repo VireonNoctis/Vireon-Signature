@@ -1,9 +1,11 @@
 {
   "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
-    "streetsidesoftware.code-spell-checker",
     "davidanson.vscode-markdownlint",
     "redhat.vscode-yaml",
-    "tamasfe.even-better-toml"
+    "streetsidesoftware.code-spell-checker"
   ]
 }

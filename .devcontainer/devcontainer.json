@@ -1,28 +1,38 @@
 {
-  "name": "Project Workspace",
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "remoteUser": "codespace",
+  "name": "Vireon Signature",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "remoteUser": "node",
   "updateRemoteUserUID": true,
   "customizations": {
     "vscode": {
       "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
         "editorconfig.editorconfig",
-        "streetsidesoftware.code-spell-checker",
         "davidanson.vscode-markdownlint",
         "redhat.vscode-yaml",
-        "tamasfe.even-better-toml"
+        "streetsidesoftware.code-spell-checker"
       ],
       "settings": {
-        "editor.rulers": [100, 120],
+        "editor.rulers": [
+          100,
+          120
+        ],
         "editor.minimap.enabled": false,
         "editor.renderWhitespace": "boundary",
         "editor.detectIndentation": true,
         "files.insertFinalNewline": true,
-        "files.trimTrailingWhitespace": true,
-        "terminal.integrated.scrollback": 10000
+        "files.trimTrailingWhitespace": true
       }
     }
   },
-  "forwardPorts": [],
-  "portsAttributes": {}
+  "forwardPorts": [
+    5173
+  ],
+  "portsAttributes": {
+    "5173": {
+      "label": "Vite dev server",
+      "onAutoForward": "openBrowser"
+    }
+  }
 }

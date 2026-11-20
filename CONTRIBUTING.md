@@ -1,46 +1,31 @@
 # Contributing
 
-Thanks for taking the time to improve this project.
+Keep the product focused: a browser-only email signature studio with expressive editing and conservative email output.
 
-## Before opening a change
+## Development
 
-- Read the README and relevant architecture or setup documentation.
-- Check existing issues and pull requests to avoid duplicate work.
-- For substantial changes, describe the intended approach before implementing it.
+```bash
+npm install
+npm run dev
+```
 
-## Development workflow
-
-1. Create a focused branch from the default branch.
-2. Make the smallest complete change that solves the problem.
-3. Add or update tests for changed behavior.
-4. Update documentation when setup, behavior, configuration, or public interfaces change.
-5. Run the checks relevant to the code you touched.
-6. Review the complete diff before opening a pull request.
-
-## Baseline checks
-
-Run the repository's dependency-free validation:
+Before submitting changes, run:
 
 ```bash
 python3 scripts/validate.py
+npm test
+npm run build
 ```
 
-Optional local hooks:
+## Architecture
 
-```bash
-python3 -m pip install pre-commit
-pre-commit install
-pre-commit run --all-files
-```
-
-Project-specific build, test, lint, and format commands should be documented in the README and added to CI.
+- Keep the signature renderer framework-independent in `src/features/signature-studio/domain/`.
+- Keep browser storage and clipboard/download behavior in React hooks.
+- Keep editor and Three.js presentation in feature components.
+- Keep generated email HTML free of scripts, tracking, external stylesheets, Canvas, blur and editor-only effects.
+- Add regression tests for observable rendering or validation behavior.
+- Avoid dependencies for one-off helpers when platform APIs are sufficient.
 
 ## Pull requests
 
-- Explain the problem and the reason for the approach.
-- Describe user-visible or operational impact.
-- Include tests and validation performed, including anything not tested.
-- Call out migration steps, configuration changes, and security implications.
-- Keep each pull request focused and reasonably sized.
-
-Be respectful and constructive in reviews. See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+Explain the user-facing change, note compatibility impact, and include the exact checks that were run. Do not claim unexecuted checks passed.

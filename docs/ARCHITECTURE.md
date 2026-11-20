@@ -1,31 +1,67 @@
 # Architecture
 
-Document the architecture that exists, not the architecture that might exist one day.
+## Product boundary
 
-## System overview
+Vireon Signature is a browser-only React application built with JavaScript, Vite and Three.js. It ships as static files to GitHub Pages. It has no backend, database, account system, remote draft storage or analytics endpoint.
 
-Describe the project's main responsibilities, runtime boundaries, and external systems.
+## Runtime
 
-## Components
+```text
+index.html
+└── src/main.jsx
+    └── src/app/App.jsx
+        └── features/signature-studio/components/SignatureStudio.jsx
+            ├── components/ThreeAtmosphere.jsx
+            ├── hooks/useSignatureDraft.js
+            ├── hooks/useSignatureExport.js
+            └── domain/emailSignature.js
+```
 
-| Component | Responsibility | Owns |
+## Ownership
+
+| Area | Owns | Must not depend on |
 | --- | --- | --- |
-| Replace me | Describe one real component | State, data, or interface it owns |
+| `app/` | Root React composition | Feature-private implementation |
+| `features/signature-studio/components/` | Editor, preview, style picker and Three.js scene | Deployment concerns |
+| `features/signature-studio/hooks/` | Browser draft lifecycle and clipboard/download behavior | Component markup |
+| `features/signature-studio/domain/` | Configuration, URL validation, palette and email HTML/text rendering | React, DOM, storage or clipboard |
+| `features/signature-studio/styles/` | Feature presentation, responsive behavior and animation | Domain rendering |
+| `styles/` | Shared reset and design tokens | Feature-specific selectors |
+| `tests/domain/` | Observable contracts of the pure renderer | Component-private state |
 
 ## Data flow
 
-Describe the important request, event, or data flows. Add a diagram only when it makes the system easier to understand.
+1. The editor updates a plain JavaScript signature configuration.
+2. The draft hook restores validated local data and writes edits to local storage.
+3. The domain module turns configuration into conservative email-safe HTML and plain text.
+4. The preview displays the generated HTML inside the app's glass presentation.
+5. The export hook copies both HTML and plain-text alternatives, copies raw HTML, or downloads a self-contained HTML document.
 
-## Boundaries and invariants
+## Dependency direction
 
-- Record the rules that must remain true across components.
-- Identify trust boundaries and where input is validated.
-- Explain how failures, retries, and timeouts are handled.
+The email renderer is the stable center. React components and hooks depend on it; it does not import React, browser APIs or DOM utilities. Three.js owns only the atmospheric background. Neither Three.js nor editor CSS enters copied email HTML.
 
-## Operations
+## Visual system
 
-Document configuration, observability, deployment, migrations, backups, and recovery where relevant.
+The product UI is a restrained monochrome glass workspace over a procedural Three.js coastal atmosphere. Ten preset signature finishes and a custom palette affect the signature card and exported static colour treatment. The main editor remains grayscale to preserve hierarchy.
 
-## Related decisions
+The Three.js scene:
+- Caps device pixel ratio for mobile performance.
+- Stops when the document is hidden.
+- Supports a pause control and reduced-motion preference.
+- Handles context loss with a CSS background fallback.
+- Disposes renderer, geometry and material on unmount.
 
-Link to records in [DECISIONS](DECISIONS/README.md) for significant architectural trade-offs.
+## Failure and security boundaries
+
+- Stored drafts are treated as untrusted and restored only into known fields.
+- User-controlled text is HTML-escaped.
+- Web links are limited to HTTP/HTTPS and reject embedded credentials.
+- Images require HTTPS and may still be blocked by email clients.
+- Clipboard permission failures are visible; raw HTML copy and file export are alternatives.
+- Invalid name or email prevents export and focuses the relevant input.
+- WebGL2 unavailability does not block editor or export functionality.
+
+## Deployment
+
+GitHub Actions runs repository validation and domain regression tests, then builds the Vite application with the `/Vireon-Signature/` base path and deploys the static `dist/` output to GitHub Pages.

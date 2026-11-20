@@ -1,83 +1,131 @@
-# Project Name
+# VIREON / SIGNATURE
 
-> Replace this sentence with a clear, one-line description of what this project does.
+<p><img src="public/vireon-mark.svg" width="46" height="46" alt="Vireon mark" /></p>
 
-A clean, language-neutral foundation for building and maintaining software projects. It gives every new repository a consistent development environment, sensible defaults, quality checks, and security hygiene without choosing your architecture or dependencies for you.
+**One signature. Your whole team.**
 
-## Start here
+A cinematic, monochrome signature studio. Shape your identity, choose a finish, preview the result and insert it into your inbox.
 
-1. Rename the project and rewrite this README so it describes the actual product.
-2. Read [the project setup checklist](docs/PROJECT_SETUP.md).
-3. Choose the language, runtime versions, package manager, and application structure.
-4. Add the real build, test, lint, and formatting commands to the CI workflow.
-5. Choose and add a license before publishing or distributing the project.
-6. Remove anything that does not belong in this project.
+<p>
+  <a href="https://github.com/VireonNoctis/Vireon-Signature/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/VireonNoctis/Vireon-Signature/actions/workflows/ci.yml/badge.svg" /></a>
+  <img alt="React 19" src="https://img.shields.io/badge/React-19.3-61dafb?logo=react&logoColor=111" />
+  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-ES2022-f7df1e?logo=javascript&logoColor=111" />
+  <img alt="Three.js" src="https://img.shields.io/badge/Three.js-WebGL-111?logo=threedotjs" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=fff" />
+</p>
 
-## Development environment
+---
 
-**GitHub Codespaces** is ready to use through `.devcontainer/devcontainer.json`. The workspace uses the Dev Containers Universal image so you can start with a broad set of common development tools, then add only the runtime-specific tooling your project needs.
+## The studio
 
-For local development, use your preferred editor. The repository includes:
+A calm, animated workspace built around the signature itself.
 
-- `.editorconfig` and `.gitattributes` for consistent files.
-- `.vscode/` recommendations and shared workspace settings.
-- `.pre-commit-config.yaml` for common hygiene checks.
-- `AGENTS.md` with guidance for coding agents and contributors.
+- Live identity, contact and brand editing.
+- A three-dimensional atmospheric background inspired by the supplied coastal reference.
+- Ten ready-made finishes, plus a Custom palette.
+- Portrait, brand-mark and minimal compositions.
+- Formatted signature copy, raw HTML copy and standalone HTML export.
+- In-context insertion guidance for Gmail, Outlook, Proton Mail, Apple Mail, Thunderbird and Cloudflare Email Service.
 
-## Quality and automation
+### Signature finishes
 
-| Tooling | Purpose |
+| Style | Character |
 | --- | --- |
-| GitHub Actions | Validates the starter configuration on pushes and pull requests. |
-| OpenSSF Scorecard | Periodically evaluates repository security practices. |
-| Dependabot | Keeps GitHub Actions dependencies up to date. |
-| Pre-commit | Catches whitespace, malformed config, merge markers, and private-key mistakes before commits. |
-| `scripts/validate.py` | Checks the template's own JSON configuration and pinned workflow actions. |
+| Liquid Glass | Cool, translucent graphite |
+| Sakura Glass | Soft rose glass |
+| Obsidian | Deep black and silver |
+| Frost | Quiet, pale mineral |
+| Aurora | Muted green light |
+| Chrome | Brushed metal |
+| Editorial | Warm paper |
+| Midnight | Blue-black |
+| Monochrome | Pure grayscale |
+| Holographic | Restrained iridescence |
+| Custom | Your own accent and surfaces |
 
-These checks are a baseline, not a substitute for project tests. Add your language's formatter, linter, type checker, unit tests, integration tests, and build to `.github/workflows/ci.yml` once the stack is chosen. Keep required checks fast, deterministic, and reproducible.
+The editor's materials never enter the copied email HTML. Email output stays table-based, inline-styled and text-first.
 
-### Run the baseline checks
+## Built with
+
+- **JavaScript** — ES modules, no TypeScript.
+- **React 19** — interface, editor state and transitions.
+- **Three.js** — procedural WebGL background.
+- **Vite** — local development and static production builds.
+
+No backend, account system, analytics endpoint or remote draft store.
+
+## Get started
+
+**Requirements:** Node.js 22.12+ and npm 11+.
+
+```bash
+git clone https://github.com/VireonNoctis/Vireon-Signature.git
+cd Vireon-Signature
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+## Quality checks
 
 ```bash
 python3 scripts/validate.py
+npm test
+npm run build
 ```
 
-Install the optional local Git hooks:
+For the GitHub Pages repository path:
 
 ```bash
-python3 -m pip install pre-commit
-pre-commit install
-pre-commit run --all-files
+npm run build:pages
+npm run preview
 ```
 
-## Repository map
+## Project map
 
 ```text
-.
-├── .devcontainer/       Codespaces and Dev Container setup
-├── .github/             CI, security automation, issue and PR templates
-├── .vscode/             Shared editor settings and recommendations
-├── docs/                Setup notes, architecture, and decision records
-├── scripts/             Small, dependency-free developer utilities
-├── AGENTS.md            Guidance for coding agents
-├── CONTRIBUTING.md      Contribution workflow
-├── SECURITY.md          Vulnerability reporting guidance
-└── README.md            Project entry point
+src/
+├── app/                         # React app composition
+├── features/
+│   └── signature-studio/
+│       ├── components/          # Editor, preview and Three.js scene
+│       ├── hooks/               # Browser draft and export behavior
+│       ├── domain/              # Framework-free email renderer
+│       └── styles/              # Studio design system and motion
+├── styles/                      # Global tokens and reset
+└── main.jsx                     # React entry point
+
+tests/domain/                    # Email renderer regression tests
+public/                          # Icons, social preview and site metadata
+docs/                            # Architecture, setup, decisions and compatibility
+scripts/                         # Repository validation
+.github/workflows/               # CI and GitHub Pages deployment
 ```
 
-## Engineering principles
+## Compatibility
 
-- Prefer the smallest complete solution over unnecessary abstraction.
-- Keep dependencies intentional and explain non-obvious choices.
-- Make changes reviewable; avoid unrelated formatting or churn.
-- Treat errors, permissions, input validation, and secrets as first-class concerns.
-- Document real decisions and trade-offs, not speculative architecture.
-- Never claim a test, build, or security check passed unless it was actually run.
+The generated signature uses presentation tables, inline CSS, system fonts, explicit image dimensions, safe links and a plain-text clipboard alternative. It is intended for broad compatibility with Gmail, Outlook, Apple Mail, Proton Mail, Yahoo Mail and Thunderbird. Individual clients can sanitize markup, block remote images or apply dark-mode transformations, so identical rendering cannot be guaranteed.
 
-## Security
+Cloudflare Email Routing is inbound forwarding. For outbound Cloudflare Email Service messages, include the exported HTML in the sending application's HTML body.
 
-Do not commit credentials, private keys, tokens, production data, or local environment files. Keep secrets in the relevant deployment platform's secret manager. See [SECURITY.md](SECURITY.md) for reporting guidance and [the setup checklist](docs/PROJECT_SETUP.md) for recommended repository settings.
+## Privacy
 
-## License
+- Drafts stay in this browser's local storage.
+- Signature details are not sent to Vireon.
+- Images must be publicly accessible HTTPS URLs; recipients may still block them.
+- Exported email HTML contains no scripts, tracking pixels, remote CSS or web fonts.
 
-No license is included intentionally. Choose the license that matches this project's ownership and distribution model, then add the complete license text and update this section. Until a license is added, do not assume others have permission to reuse or distribute the project.
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Project setup](docs/PROJECT_SETUP.md)
+- [Signature output and compatibility](docs/SIGNATURE_STUDIO.md)
+- [Migration and untangling audit](docs/UNTANGLE_AUDIT.md)
+- [Architecture decisions](docs/DECISIONS/README.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+
+---
+
+<p align="center"><sub>VIREON / SIGNATURE — DESIGNED TO SIGN OFF.</sub></p>
