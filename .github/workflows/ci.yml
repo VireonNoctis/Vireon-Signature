@@ -45,5 +45,25 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium webkit
 
-      - name: Run complete validation
-        run: npm run validate
+      - name: Run domain and team tests
+        run: npm test
+
+      - name: Build and test C++ RocksDB API
+        run: npm run test:backend
+        timeout-minutes: 5
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Run email-client regression matrix
+        run: npm run test:email
+        timeout-minutes: 15
+
+      - name: Upload email preview screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: email-client-previews-${{ github.run_number }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 14

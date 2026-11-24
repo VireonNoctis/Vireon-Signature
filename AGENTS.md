@@ -705,8 +705,11 @@ Do not perform broad folder moves as incidental cleanup during an unrelated task
 - Keep `domain/emailSignature.js` framework-independent. React, browser storage, clipboard APIs and DOM access belong in components or hooks, not the domain renderer.
 - Use plain JavaScript ES modules and JSX. Add JSDoc only where a public contract or non-obvious boundary benefits from it.
 - Put behavior-oriented regression tests in `tests/domain/`. Preserve useful tests and comments; do not remove either category as generic cleanup.
-- Local commands: `npm run dev`, `npm test`, `npm run build`, and `python3 scripts/validate.py`.
+- Local commands: `npm run dev`, `npm test`, `npm run test:backend`, `npm run test:email`, `npm run build`, `npm run validate`, and `python3 scripts/validate.py`.
 - Use Node.js 24 and npm in CI. GitHub Actions references must be pinned to full commit SHAs.
 - Three.js is limited to the decorative background. Cap pixel ratio, pause when the page is hidden, respect reduced motion, handle context loss and dispose GPU resources.
 - Email output must remain conservative and independent of editor-only effects. Never put scripts, external stylesheets, tracking pixels, Canvas output, blur or web-font dependencies into copied signature HTML.
-- Signature drafts remain local to the visitor's browser. Do not add server-side collection or analytics without changing the privacy model and documentation.
+- Employee profiles and brand presets persist through the same-origin C++17 API and RocksDB. An HttpOnly anonymous session cookie scopes one browser workspace; writes require the matching CSRF cookie/header and same-origin validation. This intentionally replaces the earlier local-only draft model. Preserve the documented anonymous, single-browser privacy boundary, plaintext-at-rest warning, and JSON export recovery. Do not introduce accounts, cross-device sharing, analytics, or additional server-side data collection without changing the privacy model and documentation.
+- GitHub Pages is static hosting only. Persistent team workspaces require the Docker runtime with the C++ API and frontend served from the same origin; never report a remote save while the API is unavailable.
+- Keep the interface's system palette and ambient Three.js scene grayscale. User-defined signature brand colours remain an explicit custom option.
+- Load Geist Sans and Geist Mono through the pinned `.ttf` assets; do not add Google Fonts.

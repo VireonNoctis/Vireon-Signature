@@ -10,7 +10,7 @@ for (const client of clients) {
           ? { width: 390, height: 844 } : { width: 1280, height: 900 });
         const pageErrors = [];
         page.on("pageerror", (error) => pageErrors.push(error.message));
-        await page.goto("/");
+        await page.goto("/", { waitUntil: "domcontentloaded" });
         await page.getByRole("button", { name: "Create first profile" }).click();
         await page.locator("#signature-name").fill("Vir Example");
         await page.locator("#signature-email").fill("vir@example.com");
@@ -18,7 +18,7 @@ for (const client of clients) {
         await page.locator(".client-tabs").first().getByRole("button", { name: client, exact: true }).click();
         await page.locator(".preview-options .preview-toggle").getByRole("button", { name: theme, exact: true }).click();
         if (formFactor === "mobile") {
-          await page.getByRole("button", { name: "Desktop", exact: true }).click();
+          await page.getByRole("button", { name: "Mobile 390px" }).click();
           await expect(page.locator(".preview-stage")).toHaveClass(/is-mobile/);
         } else {
           await expect(page.locator(".preview-stage")).not.toHaveClass(/is-mobile/);
@@ -34,13 +34,13 @@ for (const client of clients) {
         const iframeWidth = await page.locator("iframe.preview-frame").evaluate((element) => element.getBoundingClientRect().width);
         if (formFactor === "mobile") expect(iframeWidth).toBeLessThanOrEqual(390);
         expect(pageErrors).toEqual([]);
-        await page.screenshot({ path: testInfo.outputPath("email-preview.png"), fullPage: true });
+        await page.locator(".preview-stage").screenshot({ path: testInfo.outputPath("email-preview.png") });
       });
     }
   }
 }
 test("exported markup uses conservative email-safe HTML", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.getByRole("button", { name: "Create first profile" }).click();
   await page.locator("#signature-name").fill("Vir Example");
   await page.locator("#signature-email").fill("vir@example.com");
@@ -51,7 +51,7 @@ test("exported markup uses conservative email-safe HTML", async ({ page }) => {
   expect(rendered).not.toContain("backdrop-filter");
 });
 test("PWA manifest and scoped service worker are available", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   const response = await page.request.get("/site.webmanifest");
   expect(response.ok()).toBeTruthy();
   const manifest = await response.json();

@@ -17,11 +17,11 @@ Font assets are the Geist Sans and Geist Mono variable `.ttf` files from the [of
 
 ## Run the complete app
 
-\`\`\`bash
+```bash
 docker compose up --build
-\`\`\`
+```
 
-Open http://localhost:8080. Local Compose uses non-Secure cookies for localhost. For production, set \`COOKIE_SECURE=true\` and \`APP_ORIGIN=https://your-domain\`, then place the container behind HTTPS.
+Open http://localhost:8080. Local Compose uses non-Secure cookies for localhost. For production, set `COOKIE_SECURE=true` and `APP_ORIGIN=https://your-domain`, then place the container behind HTTPS.
 
 ## Development
 
