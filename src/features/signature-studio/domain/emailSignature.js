@@ -1,14 +1,14 @@
 export const SIGNATURE_STYLES = [
-  { id: "liquid-glass", name: "Liquid Glass", accent: "#dce9ef", background: "#121820", foreground: "#f2f5f8", muted: "#9eacb6", border: "#52616b" },
-  { id: "sakura-glass", name: "Sakura Glass", accent: "#ebbdca", background: "#201619", foreground: "#fff4f5", muted: "#c4a8b0", border: "#694d56" },
+  { id: "liquid-glass", name: "Liquid Glass", accent: "#e3e3e3", background: "#121212", foreground: "#f2f2f2", muted: "#a0a0a0", border: "#555555" },
+  { id: "sakura-glass", name: "Sakura Glass", accent: "#c8c8c8", background: "#1d1d1d", foreground: "#f4f4f4", muted: "#b0b0b0", border: "#5b5b5b" },
   { id: "obsidian", name: "Obsidian", accent: "#ffffff", background: "#090909", foreground: "#f4f4f4", muted: "#a5a5a5", border: "#414141" },
-  { id: "frost", name: "Frost", accent: "#7f9da9", background: "#f4f7f8", foreground: "#151d22", muted: "#5a6a71", border: "#c6d0d4" },
-  { id: "aurora", name: "Aurora", accent: "#8fd6c1", background: "#0b1818", foreground: "#ecf7f3", muted: "#96b9af", border: "#345a50" },
-  { id: "chrome", name: "Chrome", accent: "#d3d6d7", background: "#151617", foreground: "#f6f6f6", muted: "#a5aaad", border: "#666b6e" },
-  { id: "editorial", name: "Editorial", accent: "#2e3132", background: "#f2efe8", foreground: "#171717", muted: "#62615c", border: "#c8c4bb" },
-  { id: "midnight", name: "Midnight", accent: "#afc2ed", background: "#10182a", foreground: "#f3f5ff", muted: "#acb5cd", border: "#465574" },
+  { id: "frost", name: "Frost", accent: "#777777", background: "#f4f4f4", foreground: "#151515", muted: "#5a5a5a", border: "#c6c6c6" },
+  { id: "aurora", name: "Aurora", accent: "#bdbdbd", background: "#111111", foreground: "#eeeeee", muted: "#a0a0a0", border: "#454545" },
+  { id: "chrome", name: "Chrome", accent: "#d3d3d3", background: "#151515", foreground: "#f6f6f6", muted: "#a5a5a5", border: "#666666" },
+  { id: "editorial", name: "Editorial", accent: "#2e2e2e", background: "#f2f2f2", foreground: "#171717", muted: "#626262", border: "#c8c8c8" },
+  { id: "midnight", name: "Midnight", accent: "#b3b3b3", background: "#101010", foreground: "#f3f3f3", muted: "#acacac", border: "#464646" },
   { id: "monochrome", name: "Monochrome", accent: "#cfcfcf", background: "#111111", foreground: "#f3f3f3", muted: "#9a9a9a", border: "#484848" },
-  { id: "holographic", name: "Holographic", accent: "#cbc6e8", background: "#12151c", foreground: "#f6f6f8", muted: "#abb0c3", border: "#54566b" },
+  { id: "holographic", name: "Holographic", accent: "#c9c9c9", background: "#121212", foreground: "#f6f6f6", muted: "#aaaaaa", border: "#555555" },
   { id: "custom", name: "Custom", accent: "#d9d9d9", background: "#111111", foreground: "#f4f4f4", muted: "#a5a5a5", border: "#4b4b4b" }
 ];
 

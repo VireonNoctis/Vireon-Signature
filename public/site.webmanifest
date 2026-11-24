@@ -1,16 +1,18 @@
 {
+  "id": "./",
   "name": "Vireon Signature",
   "short_name": "Signature",
-  "start_url": "/Vireon-Signature/",
+  "description": "Design and manage email signatures for your team.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#06090e",
-  "theme_color": "#07101d",
-  "icons": [
-    {
-      "src": "/Vireon-Signature/vireon-mark.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
-  ]
+  "orientation": "any",
+  "background_color": "#070707",
+  "theme_color": "#070707",
+  "icons": [{
+    "src": "./vireon-mark.svg",
+    "sizes": "any",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }]
 }

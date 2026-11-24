@@ -1,131 +1,36 @@
-# VIREON / SIGNATURE
+# Vireon Signature
 
-<p><img src="public/vireon-mark.svg" width="46" height="46" alt="Vireon mark" /></p>
+A monochrome email-signature studio for individuals and teams. Build one brand system, manage employee profiles, and export email-safe HTML signatures in bulk.
 
-**One signature. Your whole team.**
+## What it includes
 
-A cinematic, monochrome signature studio. Shape your identity, choose a finish, preview the result and insert it into your inbox.
+- Live signature editor and conservative email-safe HTML/text renderer
+- Multiple employee profiles and reusable brand presets
+- CSV/JSON team import/export and bulk signature generation
+- C++17 API with RocksDB-backed anonymous workspaces
+- HttpOnly session cookie and CSRF protection for workspace writes
+- PWA manifest, service worker and genuine browser install prompt where supported
+- Gmail, Outlook, Apple Mail and Proton Mail preview profiles across light/dark and desktop/mobile layouts
+- Geist Sans and Geist Mono TTF declarations; no Google Fonts
 
-<p>
-  <a href="https://github.com/VireonNoctis/Vireon-Signature/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/VireonNoctis/Vireon-Signature/actions/workflows/ci.yml/badge.svg" /></a>
-  <img alt="React 19" src="https://img.shields.io/badge/React-19.3-61dafb?logo=react&logoColor=111" />
-  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-ES2022-f7df1e?logo=javascript&logoColor=111" />
-  <img alt="Three.js" src="https://img.shields.io/badge/Three.js-WebGL-111?logo=threedotjs" />
-  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=fff" />
-</p>
+Font assets are the Geist Sans and Geist Mono variable `.ttf` files from the [official Vercel Geist repository](https://github.com/vercel/geist-font), pinned to the `v1.9.2` release and served through jsDelivr. The fonts are not loaded from Google Fonts.
 
----
+## Run the complete app
 
-## The studio
+\`\`\`bash
+docker compose up --build
+\`\`\`
 
-A calm, animated workspace built around the signature itself.
+Open http://localhost:8080. Local Compose uses non-Secure cookies for localhost. For production, set \`COOKIE_SECURE=true\` and \`APP_ORIGIN=https://your-domain\`, then place the container behind HTTPS.
 
-- Live identity, contact and brand editing.
-- A three-dimensional atmospheric background inspired by the supplied coastal reference.
-- Ten ready-made finishes, plus a Custom palette.
-- Portrait, brand-mark and minimal compositions.
-- Formatted signature copy, raw HTML copy and standalone HTML export.
-- In-context insertion guidance for Gmail, Outlook, Proton Mail, Apple Mail, Thunderbird and Cloudflare Email Service.
+## Development
 
-### Signature finishes
+See [Project Setup](docs/PROJECT_SETUP.md) for C++ dependencies, the Vite API proxy, tests and deployment details.
 
-| Style | Character |
-| --- | --- |
-| Liquid Glass | Cool, translucent graphite |
-| Sakura Glass | Soft rose glass |
-| Obsidian | Deep black and silver |
-| Frost | Quiet, pale mineral |
-| Aurora | Muted green light |
-| Chrome | Brushed metal |
-| Editorial | Warm paper |
-| Midnight | Blue-black |
-| Monochrome | Pure grayscale |
-| Holographic | Restrained iridescence |
-| Custom | Your own accent and surfaces |
+## Important deployment note
 
-The editor's materials never enter the copied email HTML. Email output stays table-based, inline-styled and text-first.
+The existing GitHub Pages deployment remains a static frontend preview. GitHub Pages cannot execute the C++ API or mount RocksDB. Team persistence requires the Docker runtime; the static Pages page reports when the API is unavailable rather than claiming it has saved data.
 
-## Built with
+## Email-client testing scope
 
-- **JavaScript** — ES modules, no TypeScript.
-- **React 19** — interface, editor state and transitions.
-- **Three.js** — procedural WebGL background.
-- **Vite** — local development and static production builds.
-
-No backend, account system, analytics endpoint or remote draft store.
-
-## Get started
-
-**Requirements:** Node.js 22.12+ and npm 11+.
-
-```bash
-git clone https://github.com/VireonNoctis/Vireon-Signature.git
-cd Vireon-Signature
-npm install
-npm run dev
-```
-
-Open the local URL printed by Vite.
-
-## Quality checks
-
-```bash
-python3 scripts/validate.py
-npm test
-npm run build
-```
-
-For the GitHub Pages repository path:
-
-```bash
-npm run build:pages
-npm run preview
-```
-
-## Project map
-
-```text
-src/
-├── app/                         # React app composition
-├── features/
-│   └── signature-studio/
-│       ├── components/          # Editor, preview and Three.js scene
-│       ├── hooks/               # Browser draft and export behavior
-│       ├── domain/              # Framework-free email renderer
-│       └── styles/              # Studio design system and motion
-├── styles/                      # Global tokens and reset
-└── main.jsx                     # React entry point
-
-tests/domain/                    # Email renderer regression tests
-public/                          # Icons, social preview and site metadata
-docs/                            # Architecture, setup, decisions and compatibility
-scripts/                         # Repository validation
-.github/workflows/               # CI and GitHub Pages deployment
-```
-
-## Compatibility
-
-The generated signature uses presentation tables, inline CSS, system fonts, explicit image dimensions, safe links and a plain-text clipboard alternative. It is intended for broad compatibility with Gmail, Outlook, Apple Mail, Proton Mail, Yahoo Mail and Thunderbird. Individual clients can sanitize markup, block remote images or apply dark-mode transformations, so identical rendering cannot be guaranteed.
-
-Cloudflare Email Routing is inbound forwarding. For outbound Cloudflare Email Service messages, include the exported HTML in the sending application's HTML body.
-
-## Privacy
-
-- Drafts stay in this browser's local storage.
-- Signature details are not sent to Vireon.
-- Images must be publicly accessible HTTPS URLs; recipients may still block them.
-- Exported email HTML contains no scripts, tracking pixels, remote CSS or web fonts.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Project setup](docs/PROJECT_SETUP.md)
-- [Signature output and compatibility](docs/SIGNATURE_STUDIO.md)
-- [Migration and untangling audit](docs/UNTANGLE_AUDIT.md)
-- [Architecture decisions](docs/DECISIONS/README.md)
-- [Contributing](CONTRIBUTING.md)
-- [Security](SECURITY.md)
-
----
-
-<p align="center"><sub>VIREON / SIGNATURE — DESIGNED TO SIGN OFF.</sub></p>
+The automated matrix uses Chromium and WebKit browser simulations labelled as Gmail, Outlook, Apple Mail and Proton Mail, with light/dark themes and mobile/desktop viewports. It checks email-safe markup and layout regressions. It does not sign into or claim pixel-perfect output from real inbox applications.

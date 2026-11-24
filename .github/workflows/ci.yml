@@ -16,29 +16,34 @@ concurrency:
 
 jobs:
   validate:
-    name: Validate, test and build
+    name: Validate frontend, C++ API and email rendering
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - name: Check out source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 24
           package-manager-cache: false
 
+      - name: Install C++ and RocksDB dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake build-essential librocksdb-dev libboost-system-dev libssl-dev nlohmann-json3-dev
+
       - name: Validate repository configuration
         run: python3 scripts/validate.py
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Run domain regression tests
-        run: npm test
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium webkit
 
-      - name: Build production app
-        run: npm run build
+      - name: Run complete validation
+        run: npm run validate

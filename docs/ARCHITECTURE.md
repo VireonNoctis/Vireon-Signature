@@ -2,66 +2,85 @@
 
 ## Product boundary
 
-Vireon Signature is a browser-only React application built with JavaScript, Vite and Three.js. It ships as static files to GitHub Pages. It has no backend, database, account system, remote draft storage or analytics endpoint.
+Vireon Signature is a React + JavaScript + Vite application backed by a C++ HTTP service and RocksDB. The UI and API are served from one origin by the Docker runtime. GitHub Pages remains a static frontend preview; it cannot run the C++ process or persist team data.
 
 ## Runtime
 
-```text
-index.html
-└── src/main.jsx
-    └── src/app/App.jsx
-        └── features/signature-studio/components/SignatureStudio.jsx
-            ├── components/ThreeAtmosphere.jsx
-            ├── hooks/useSignatureDraft.js
-            ├── hooks/useSignatureExport.js
-            └── domain/emailSignature.js
-```
+\`\`\`text
+Browser
+├── React / Vite frontend
+│   ├── Signature editor and team workspace
+│   ├── Email-safe HTML / plain-text renderer
+│   ├── CSV and JSON import/export
+│   └── PWA service worker
+└── Same-origin C++ API (Boost.Beast)
+    ├── Anonymous workspace cookie + CSRF double-submit cookie
+    ├── Team/profile/preset validation
+    └── RocksDB (one namespace per anonymous session token)
+\`\`\`
 
 ## Ownership
 
 | Area | Owns | Must not depend on |
 | --- | --- | --- |
-| `app/` | Root React composition | Feature-private implementation |
-| `features/signature-studio/components/` | Editor, preview, style picker and Three.js scene | Deployment concerns |
-| `features/signature-studio/hooks/` | Browser draft lifecycle and clipboard/download behavior | Component markup |
-| `features/signature-studio/domain/` | Configuration, URL validation, palette and email HTML/text rendering | React, DOM, storage or clipboard |
-| `features/signature-studio/styles/` | Feature presentation, responsive behavior and animation | Domain rendering |
-| `styles/` | Shared reset and design tokens | Feature-specific selectors |
-| `tests/domain/` | Observable contracts of the pure renderer | Component-private state |
+| \`src/app/\` | Root React composition | Feature-private implementation |
+| \`src/features/signature-studio/components/\` | Editor, preview, PWA setup and Three.js scene | Backend persistence details |
+| \`src/features/signature-studio/hooks/\` | API workspace lifecycle, clipboard, install prompt | Domain renderer |
+| \`src/features/signature-studio/domain/\` | Signature HTML/text renderer, validated team/CSV transformations | React, DOM, storage or clipboard |
+| \`src/features/signature-studio/styles/\` | Signature Studio presentation | Domain rendering |
+| \`backend/src/\` | HTTP routing, cookie validation, RocksDB persistence and static delivery | Frontend component state |
+| \`tests/domain/\` | Pure renderer and team import/export contracts | Browser-private state |
+| \`tests/email-client/\` | Browser-rendered client/theme/viewport regression matrix | Production inbox credentials |
+| \`backend/tests/\` | HTTP, cookie, CSRF and persistence integration | External services |
 
 ## Data flow
 
-1. The editor updates a plain JavaScript signature configuration.
-2. The draft hook restores validated local data and writes edits to local storage.
-3. The domain module turns configuration into conservative email-safe HTML and plain text.
-4. The preview displays the generated HTML inside the app's glass presentation.
-5. The export hook copies both HTML and plain-text alternatives, copies raw HTML, or downloads a self-contained HTML document.
+1. The editor creates one employee profile using a validated JavaScript configuration.
+2. The browser receives an anonymous 256-bit session token in an HttpOnly, SameSite=Lax cookie. The server stores only its SHA-256 digest as the RocksDB namespace.
+3. A separate readable CSRF cookie is echoed in the \`X-CSRF-Token\` header for workspace writes. Writes also require a same-origin \`Origin\` header.
+4. The React hook debounces and serializes team saves to \`PUT /api/team\`. A network failure is visible; edits remain in the current tab but are not falsely presented as saved.
+5. C++ validates the data allowlist and size limits before persisting it in RocksDB.
+6. The framework-independent domain renderer creates conservative email-safe HTML and plain text.
+7. CSV and JSON exports are generated locally. CSV bulk export includes each employee's individual HTML and text signature.
 
-## Dependency direction
+## API contract
 
-The email renderer is the stable center. React components and hooks depend on it; it does not import React, browser APIs or DOM utilities. Three.js owns only the atmospheric background. Neither Three.js nor editor CSS enters copied email HTML.
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | \`/api/health\` | Service health |
+| GET | \`/api/session\` | Issue/check anonymous workspace and CSRF cookies |
+| GET | \`/api/team\` | Read the active team's profiles and brand presets |
+| PUT | \`/api/team\` | Validate and persist profiles/presets to RocksDB |
 
-## Visual system
+The team endpoint supports up to 500 employee profiles, 50 brand presets and a 1 MiB request body. The service does not expose a public user directory or accept arbitrary configuration keys.
 
-The product UI is a restrained monochrome glass workspace over a procedural Three.js coastal atmosphere. Ten preset signature finishes and a custom palette affect the signature card and exported static colour treatment. The main editor remains grayscale to preserve hierarchy.
+## Security and privacy
 
-The Three.js scene:
-- Caps device pixel ratio for mobile performance.
-- Stops when the document is hidden.
-- Supports a pause control and reduced-motion preference.
-- Handles context loss with a CSS background fallback.
-- Disposes renderer, geometry and material on unmount.
+- The workspace cookie is HttpOnly, Secure in production, SameSite=Lax and scoped to \`/\`.
+- The CSRF cookie is Secure in production and SameSite=Lax; writes require a matching header and same-origin request.
+- Configure \`APP_ORIGIN\` to the exact HTTPS origin when running behind a reverse proxy. The server does not enable cross-origin credentialed requests.
+- Session tokens are generated with OpenSSL secure random bytes. RocksDB keys use SHA-256 digests, not raw cookie values.
+- The service does not log signature contents or cookie values.
+- Team data is stored unencrypted in the mounted RocksDB volume. Protect the host and volume with normal infrastructure access controls and backups.
+- This version uses anonymous browser sessions, not accounts or team invitations. Clearing the workspace cookie loses access to that session; export a JSON backup before clearing browser data.
+- The public GitHub Pages frontend cannot reach a bundled C++ backend. On Pages, the workspace reports that saving is unavailable; local edits and exports still work.
 
-## Failure and security boundaries
+## Email output and compatibility
 
-- Stored drafts are treated as untrusted and restored only into known fields.
-- User-controlled text is HTML-escaped.
-- Web links are limited to HTTP/HTTPS and reject embedded credentials.
-- Images require HTTPS and may still be blocked by email clients.
-- Clipboard permission failures are visible; raw HTML copy and file export are alternatives.
-- Invalid name or email prevents export and focuses the relevant input.
-- WebGL2 unavailability does not block editor or export functionality.
+The renderer uses presentation tables, inline styles, HTTPS images and Arial-family fallbacks. It deliberately excludes scripts, external stylesheets, tracking pixels, Canvas output, blur and web-font dependencies from copied email HTML.
+
+The automated preview matrix covers Gmail, Outlook, Apple Mail and Proton Mail labels across light/dark themes, mobile/desktop viewports, and Chromium/WebKit. These are conservative browser-based simulations and HTML regression checks, not live inbox tests or a claim of pixel-identical rendering by proprietary clients. Real inbox behavior can vary by product version and account settings.
+
+## PWA
+
+The app has a web manifest and a scoped service worker. The browser's \`beforeinstallprompt\` event is used when available. When the browser does not expose a native prompt, the action is labelled **Setup** and displays the platform's manual installation path. API requests are never cached.
+
+## Three.js
+
+Three.js is decorative only. It must not block editor or export behavior. The scene caps pixel ratio, respects reduced motion, pauses while hidden, handles context loss and disposes GPU resources.
 
 ## Deployment
 
-GitHub Actions runs repository validation and domain regression tests, then builds the Vite application with the `/Vireon-Signature/` base path and deploys the static `dist/` output to GitHub Pages.
+- \`docker compose up --build\` builds and serves the frontend and C++ API together on port 8080, with RocksDB data in the named \`signature-data\` volume.
+- Set \`COOKIE_SECURE=true\` and \`APP_ORIGIN=https://your-hostname\` behind HTTPS in production.
+- GitHub Pages continues to deploy only the static frontend at \`/Vireon-Signature/\`. It does not run C++ or RocksDB; use the container deployment for persistent team support.
