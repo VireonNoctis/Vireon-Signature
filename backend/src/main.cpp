@@ -169,6 +169,7 @@ json default_config() {
     {"customAccent", "#d9d9d9"}, {"customBackground", "#111111"},
     {"customForeground", "#f4f4f4"}, {"customMuted", "#a5a5a5"},
     {"customBorder", "#4b4b4b"}, {"layout", "portrait"},
+    {"fontFamily", "Arial"}, {"fontScale", 100}, {"signatureSpacing", "balanced"}, {"signatureMotion", "draw"},
     {"showCompany", true}, {"showPhone", true}, {"showLocation", true}, {"showSocials", true}
   };
 }
@@ -188,7 +189,7 @@ json sanitize_config(const json& source) {
     "name", "role", "company", "email", "phone", "website", "location", "tagline",
     "logoUrl", "portraitUrl", "linkedinUrl", "instagramUrl", "xUrl", "ctaLabel", "ctaUrl",
     "styleId", "customAccent", "customBackground", "customForeground", "customMuted",
-    "customBorder", "layout"
+    "customBorder", "layout", "fontFamily", "signatureSpacing", "signatureMotion"
   };
   for (const auto& key : string_keys) {
     const auto item = source.find(key);
@@ -200,6 +201,19 @@ json sanitize_config(const json& source) {
     if (key.rfind("custom", 0) == 0 && !valid_color(value)) continue;
     config[key] = value;
   }
+
+  const auto scale = source.find("fontScale");
+  if (scale != source.end() && scale->is_number_integer()) {
+    config["fontScale"] = std::max(80, std::min(125, scale->get<int>()));
+  }
+  const std::set<std::string> fonts = {
+    "Arial", "Helvetica", "Verdana", "Georgia", "Tahoma", "Trebuchet MS", "Courier New"
+  };
+  if (!fonts.count(config["fontFamily"].get<std::string>())) config["fontFamily"] = "Arial";
+  const auto spacing = config["signatureSpacing"].get<std::string>();
+  if (spacing != "compact" && spacing != "balanced" && spacing != "spacious") config["signatureSpacing"] = "balanced";
+  const auto motion = config["signatureMotion"].get<std::string>();
+  if (motion != "draw" && motion != "lift" && motion != "fade" && motion != "none") config["signatureMotion"] = "draw";
 
   const std::set<std::string> styles = {
     "liquid-glass", "sakura-glass", "obsidian", "frost", "aurora", "chrome",

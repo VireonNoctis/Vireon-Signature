@@ -4,6 +4,7 @@ import { useSignatureExport } from "../hooks/useSignatureExport.js";
 import { useTeamWorkspace } from "../hooks/useTeamWorkspace.js";
 import { usePwaInstall } from "../hooks/usePwaInstall.js";
 import {
+  SIGNATURE_FONTS,
   SIGNATURE_STYLES,
   buildSignatureHtml,
   buildSignaturePlainText,
@@ -62,7 +63,7 @@ function Arrow() {
   return <span aria-hidden="true" className="arrow-mark">↗</span>;
 }
 
-function previewDocument(html, theme, client) {
+function previewDocument(html, theme, client, motion) {
   const background = theme === "dark" ? "#171717" : "#ffffff";
   const foreground = theme === "dark" ? "#e9e9e9" : "#252525";
   const title = client + " preview";
@@ -72,7 +73,14 @@ function previewDocument(html, theme, client) {
     "Apple Mail": "body{-webkit-text-size-adjust:100%;text-size-adjust:100%}img{height:auto}",
     "Proton Mail": "body{overflow-wrap:anywhere;word-break:normal}img{max-width:100%;object-fit:contain}"
   }[client] || "";
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="' + theme + '"><title>' + title + '</title><style>html,body{margin:0;min-height:100%;background:' + background + ';color:' + foreground + ';font:13px/1.6 Arial,Helvetica,sans-serif}body{padding:18px;box-sizing:border-box}main{max-width:580px;margin:0 auto;overflow-wrap:anywhere}table{max-width:100%}img{max-width:100%;height:auto}' + clientRules + '</style></head><body data-client="' + client + '"><main>' + html + '</main></body></html>';
+  const motionRules = {
+    draw: "@keyframes signatureDraw{from{clip-path:inset(0 100% 0 0);opacity:.72}to{clip-path:inset(0 0 0 0);opacity:1}}main>table{animation:signatureDraw 1.25s cubic-bezier(.16,1,.3,1) both}",
+    lift: "@keyframes signatureLift{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}main>table{animation:signatureLift .7s cubic-bezier(.2,.8,.2,1) both}",
+    fade: "@keyframes signatureFade{from{opacity:0}to{opacity:1}}main>table{animation:signatureFade .8s ease both}",
+    none: ""
+  }[motion] || "";
+  const reducedMotion = "@media(prefers-reduced-motion:reduce){main>table{animation:none!important}}";
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="' + theme + '"><title>' + title + '</title><style>html,body{margin:0;min-height:100%;background:' + background + ';color:' + foreground + ';font:13px/1.6 Arial,Helvetica,sans-serif}body{padding:18px;box-sizing:border-box}main{max-width:580px;margin:0 auto;overflow-wrap:anywhere}table{max-width:100%}img{max-width:100%;height:auto}' + clientRules + motionRules + reducedMotion + '</style></head><body data-client="' + client + '"><main>' + html + '</main></body></html>';
 }
 
 export default function SignatureStudio() {
@@ -169,7 +177,11 @@ export default function SignatureStudio() {
         customBackground: config.customBackground,
         customForeground: config.customForeground,
         customMuted: config.customMuted,
-        customBorder: config.customBorder
+        customBorder: config.customBorder,
+        fontFamily: config.fontFamily,
+        fontScale: config.fontScale,
+        signatureSpacing: config.signatureSpacing,
+        signatureMotion: config.signatureMotion
       }
     };
     setTeam((current) => ({ ...current, presets: [...current.presets, preset] }));
@@ -188,7 +200,11 @@ export default function SignatureStudio() {
       customBackground: selectedPreset.config.customBackground,
       customForeground: selectedPreset.config.customForeground,
       customMuted: selectedPreset.config.customMuted,
-      customBorder: selectedPreset.config.customBorder
+      customBorder: selectedPreset.config.customBorder,
+      fontFamily: selectedPreset.config.fontFamily,
+      fontScale: selectedPreset.config.fontScale,
+      signatureSpacing: selectedPreset.config.signatureSpacing,
+      signatureMotion: selectedPreset.config.signatureMotion
     });
     setTeam((current) => ({
       ...current,
@@ -275,14 +291,14 @@ export default function SignatureStudio() {
   }
 
   const statusText = connection === "connecting"
-    ? "Connecting to workspace"
+    ? "Connecting"
     : connection === "offline"
-      ? "Workspace service offline · edits are temporary"
+      ? "Offline · local edits"
       : saveState === "saving"
-        ? "Saving to RocksDB"
+        ? "Saving"
         : saveState === "error"
-          ? "Save failed · reconnect"
-          : "Saved to workspace";
+          ? "Save failed"
+          : "Saved";
   const tabs = ["Identity", "Contact", "Brand"];
 
   function renderFields(keys) {
@@ -329,19 +345,19 @@ export default function SignatureStudio() {
       <main className="page-shell">
         <section className="hero">
           <div className="hero-kicker"><i /> SIGNATURE SYSTEM <span>/ 02</span></div>
-          <h1 className="hero-title"><span>One signature.</span><span>Your whole team.</span></h1>
-          <div className="hero-foot"><p>One brand system. Every person, ready to send.</p><span>DESIGN / GENERATE / INSERT</span></div>
+          <h1 className="hero-title"><span>Your signature.</span><span>Your identity.</span></h1>
+          <div className="hero-foot"><p>One brand. Every inbox.</p></div>
         </section>
 
         {connection === "offline" ? (
           <div className="service-warning" role="status">
-            <span>WORKSPACE UNAVAILABLE</span>
-            <p>The C++ service is not connected. Editing and exports still work in this tab, but changes will not be saved.</p>
+            <span>OFFLINE</span>
+            <p>Edits stay in this tab until you reconnect.</p>
           </div>
         ) : null}
 
         <section className="team-section" aria-label="Team workspace">
-          <div className="section-heading"><span>01 / TEAM</span><span>{team.profiles.length} EMPLOYEE PROFILES</span></div>
+          <div className="section-heading"><span>Team</span><span>{team.profiles.length} profiles</span></div>
           <div className="team-toolbar">
             <div className="profile-controls">
               <label htmlFor="employee-select">Employee</label>
@@ -373,7 +389,7 @@ export default function SignatureStudio() {
 
         <section className="workspace" aria-label="Signature designer">
           <div className="preview-column">
-            <div className="section-label"><span>02 / EMAIL PREVIEW</span><span className="simulation-label">CLIENT SIMULATION</span></div>
+            <div className="section-label"><span>Preview</span></div>
             <div className="preview-controls">
               <div className="client-tabs" role="group" aria-label="Email client simulation">
                 {CLIENTS.map((item) => (
@@ -398,9 +414,9 @@ export default function SignatureStudio() {
                 className="preview-frame"
                 title={client + " " + previewTheme + (mobilePreview ? " mobile" : " desktop") + " signature preview"}
                 sandbox=""
-                srcDoc={previewDocument(html, previewTheme, client)}
+                srcDoc={previewDocument(html, previewTheme, client, config.signatureMotion)}
               />
-              <div className="preview-caption"><span>{config.styleId.toUpperCase()}</span><span>STATIC EMAIL HTML</span></div>
+              <div className="preview-caption"><span>{config.styleId.toUpperCase()}</span><span>{config.signatureMotion === "none" ? "STILL" : "MOTION PREVIEW"}</span></div>
             </div>
             <div className="export-row">
               <button className="copy-primary" type="button" onClick={copySignature}>Copy signature <Arrow /></button>
@@ -408,7 +424,7 @@ export default function SignatureStudio() {
               <button className="copy-secondary" type="button" onClick={exportHtml}>Export</button>
             </div>
             <p className={"action-feedback " + notice.kind} role="status" aria-live="polite">{notice.text || statusText}</p>
-            <p className="compatibility-note">Previews emulate common browser rendering conditions. Final inbox rendering can vary by client version and account settings.</p>
+            {config.signatureMotion !== "none" ? <p className="compatibility-note">Preview motion only · exported email stays static.</p> : null}
           </div>
 
           <aside className="editor-panel">
@@ -440,7 +456,7 @@ export default function SignatureStudio() {
 
         <section className="style-section">
           <div className="layout-picker">
-            <div className="section-label"><span>04 / COMPOSITION</span><span>CHOOSE A FRAME</span></div>
+            <div className="section-label"><span>Layout</span></div>
             <div className="layout-grid">
               {[
                 ["portrait", "Portrait"],
@@ -449,13 +465,42 @@ export default function SignatureStudio() {
               ].map(([layout, label]) => <button key={layout} type="button" aria-pressed={config.layout === layout} className={config.layout === layout ? "active" : ""} onClick={() => update("layout", layout)} disabled={!activeProfile}>{label}</button>)}
             </div>
           </div>
-          <div className="section-label"><span>05 / SIGNATURE FINISH</span><span>10 STYLES + CUSTOM</span></div>
+          <div className="section-label"><span>Signature style</span><span>Presets + custom</span></div>
           <div className="style-grid" role="group" aria-label="Signature styles">
             {SIGNATURE_STYLES.map((style) => (
               <button key={style.id} type="button" className={"style-choice style-" + style.id + (config.styleId === style.id ? " active" : "")} aria-pressed={config.styleId === style.id} onClick={() => update("styleId", style.id)} disabled={!activeProfile}>
                 <span className="style-chip-preview"><i /><i /><i /></span><span className="style-choice-name">{style.name}</span>
               </button>
             ))}
+          </div>
+          <div className="design-controls">
+            <label className="design-control">
+              <span>Typeface</span>
+              <select value={config.fontFamily} onChange={(event) => update("fontFamily", event.target.value)} disabled={!activeProfile}>
+                {SIGNATURE_FONTS.map((font) => <option key={font.id} value={font.id}>{font.name}</option>)}
+              </select>
+            </label>
+            <label className="design-control">
+              <span>Type scale <output>{config.fontScale}%</output></span>
+              <input type="range" min="80" max="125" step="1" value={config.fontScale} onChange={(event) => update("fontScale", Number(event.target.value))} disabled={!activeProfile} />
+            </label>
+            <label className="design-control">
+              <span>Spacing</span>
+              <select value={config.signatureSpacing} onChange={(event) => update("signatureSpacing", event.target.value)} disabled={!activeProfile}>
+                <option value="compact">Compact</option>
+                <option value="balanced">Balanced</option>
+                <option value="spacious">Spacious</option>
+              </select>
+            </label>
+            <label className="design-control">
+              <span>Motion · preview</span>
+              <select value={config.signatureMotion} onChange={(event) => update("signatureMotion", event.target.value)} disabled={!activeProfile}>
+                <option value="draw">Ink trace</option>
+                <option value="lift">Lift</option>
+                <option value="fade">Fade</option>
+                <option value="none">Still</option>
+              </select>
+            </label>
           </div>
           {config.styleId === "custom" ? (
             <div className="custom-panel">
@@ -468,7 +513,7 @@ export default function SignatureStudio() {
 
         <section className="install-section">
           <button className="install-trigger" type="button" aria-expanded={insertOpen} onClick={() => setInsertOpen((value) => !value)}>
-            <span><small>06 / EMAIL SETUP</small><strong>Put each signature in your inbox.</strong></span><i>{insertOpen ? "−" : "+"}</i>
+            <span><small>Email setup</small><strong>Add your signature.</strong></span><i>{insertOpen ? "−" : "+"}</i>
           </button>
           {insertOpen ? (
             <div className="install-content">
@@ -490,7 +535,7 @@ export default function SignatureStudio() {
         ) : null}
       </main>
 
-      <footer className="footer"><span>VIREON / SIGNATURE</span><span>ONE BRAND. EVERY SIGNATURE.</span><a href="https://vireonnoctis.github.io/">PORTFOLIO <Arrow /></a></footer>
+      <footer className="footer"><span>VIREON / SIGNATURE</span><a href="https://vireonnoctis.github.io/">PORTFOLIO <Arrow /></a></footer>
     </div>
   );
 }

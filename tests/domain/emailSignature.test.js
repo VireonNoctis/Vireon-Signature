@@ -48,3 +48,36 @@ test("uses validated custom colors only", () => {
   assert.equal(getSignaturePalette(config).accent, "#abcdef");
   assert.equal(getSignaturePalette({ ...config, customAccent: "pink" }).accent, "#d9d9d9");
 });
+
+
+test("supports safe type, scale, spacing and preview motion choices", () => {
+  const config = restoreSignatureConfig({
+    ...createDefaultSignatureConfig(),
+    name: "Vir Example",
+    fontFamily: "Georgia",
+    fontScale: 125,
+    signatureSpacing: "spacious",
+    signatureMotion: "draw"
+  });
+  const html = buildSignatureHtml(config);
+  assert.equal(config.fontFamily, "Georgia");
+  assert.equal(config.fontScale, 125);
+  assert.equal(config.signatureSpacing, "spacious");
+  assert.equal(config.signatureMotion, "draw");
+  assert.match(html, /font-family:Georgia,serif/);
+  assert.match(html, /font-size:25px/);
+  assert.doesNotMatch(html, /@keyframes|animation:/i);
+});
+
+test("rejects unknown type, spacing and motion settings", () => {
+  const config = restoreSignatureConfig({
+    fontFamily: "Comic Sans",
+    fontScale: 500,
+    signatureSpacing: "huge",
+    signatureMotion: "blink"
+  });
+  assert.equal(config.fontFamily, "Arial");
+  assert.equal(config.fontScale, 125);
+  assert.equal(config.signatureSpacing, "balanced");
+  assert.equal(config.signatureMotion, "draw");
+});
